@@ -4,12 +4,12 @@ import android.support.annotation.Keep
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-@Keep
+/*@Keep
 @Serializable
 data class Response(
     @SerialName("response")
     val response: List<Show>?
-)
+)*/
 
 
 @Keep
@@ -23,4 +23,4 @@ data class Show(
     val overview: String?,
     @SerialName("name")
     val name: String?
-)
+) : java.io.Serializable

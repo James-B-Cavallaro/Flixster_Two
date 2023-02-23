@@ -10,16 +10,18 @@ import com.codepath.asynchttpclient.AsyncHttpClient
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler
 import kotlinx.serialization.json.Json
 import com.example.flixster_two.databinding.ActivityMainBinding
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import okhttp3.Headers
 import org.json.JSONException
 
-
+/*
 fun createJson() = Json {
     isLenient = true
     ignoreUnknownKeys = true
     useAlternativeNames = false
 }
-
+*/
 private const val API_KEY = "a07e22bc18f5cb106bfe4cc1f83ad8ed"
 private const val SEARCH_URL = "https://api.themoviedb.org/3/tv/popular?api_key=${API_KEY}&language=en-US&page=1"
 private const val TAG = "Main Activity/"
@@ -58,11 +60,18 @@ class MainActivity : AppCompatActivity() {
             override fun onSuccess(statusCode: Int, headers: Headers, json: JSON){
                 Log.i(TAG, "Successfully fetched data: $json")
                 try {
-                    val parsedJson = createJson().decodeFromString(Response.serializer(), json.jsonObject.toString())
+                    /*val parsedJson = createJson().decodeFromString(Response.serializer(), json.jsonObject.toString())
                     parsedJson.response?.let{
                         list -> shows.addAll(list)
                         showAdapter.notifyDataSetChanged()
-                    }
+                    }*/
+                    val showsRawJSON : String = json.jsonObject.get("results").toString()
+                    val gson = Gson()
+                    val arrayShowType = object : TypeToken<List<Show>>() {}.type
+
+                    shows.addAll(gson.fromJson(showsRawJSON, arrayShowType))
+                    showAdapter.notifyDataSetChanged()
+
                 } catch (e: JSONException){
                     Log.e(TAG, "Exception: $e")
                 }
